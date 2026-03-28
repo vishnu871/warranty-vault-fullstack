@@ -69,7 +69,7 @@ if (!fs.existsSync(uploadDir)) {
 app.use(cors({
   origin: [
     "http://localhost:5173", 
-    "https://jocular-valkyrie-9348d4.netlify.app" // 👈 Your new live link
+    "https://venerable-croquembouche-d86f83.netlify.app/" // 👈 Your new live link
   ],
   credentials: true
 }));
