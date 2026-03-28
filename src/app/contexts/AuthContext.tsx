@@ -296,7 +296,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setIsLoading(false);
   }, []);
-  const BACKEND_URL = "https://warranty-vault-fullstack.vercel.app/";
+  const BACKEND_URL = "https://warranty-vault-fullstack.vercel.app";
   const signIn = async (email: string, password: string) => {
     const response = await fetch(`${BACKEND_URL}/api/auth/login`,{
       method: "POST",

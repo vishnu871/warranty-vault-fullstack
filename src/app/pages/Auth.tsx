@@ -11,6 +11,8 @@ import { toast } from 'sonner';
 // 🔥 Import the new Modal
 import { ForgotPasswordModal } from '../components/ForgotPasswordModal';
 
+
+
 export function Auth() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [isLoading, setIsLoading] = useState(false);
