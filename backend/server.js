@@ -50,12 +50,23 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs"); // Added to ensure upload folder exists
 require("dotenv").config();
 
 const app = express();
 
-// ✅ Middleware (Only declared ONCE now)
-app.use(cors());
+// ✅ Create uploads folder if it doesn't exist (Important for new deployments)
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+// ✅ Updated CORS: Allow both your local machine AND your future Netlify app
+app.use(cors({
+  origin: ["http://localhost:5173", "https://your-app-name.netlify.app"], // Change this after you get your Netlify link
+  credentials: true
+}));
+
 app.use(express.json());
 
 // ✅ Make uploads folder public
@@ -76,11 +87,11 @@ const upload = multer({ storage });
 // ✅ Routes
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
-const assetRoutes = require("./routes/api/assets"); // 🔥 Moved up for clarity
+const assetRoutes = require("./routes/api/assets");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/assets", assetRoutes); // 🔥 Standardized path
+app.use("/api/assets", assetRoutes);
 
 // ✅ Upload API
 app.post("/api/upload", upload.single("bill"), (req, res) => {
@@ -93,16 +104,22 @@ app.post("/api/upload", upload.single("bill"), (req, res) => {
 
 // ✅ Test route
 app.get("/", (req, res) => {
-  res.send("Backend running...");
+  res.json({ 
+    status: "Online", 
+    message: "Warranty Vault API is running perfectly",
+    timestamp: new Date()
+  });
 });
 
-// ✅ MongoDB connection
+// ✅ MongoDB connection (Using Environment Variable)
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log("MongoDB connection error:", err));
+  .then(() => console.log("MongoDB connected ✅"))
+  .catch(err => console.error("MongoDB connection error ❌:", err));
 
-// ✅ Start server
-const PORT = 5000;
-app.listen(PORT, () => {
+// ✅ START SERVER (Crucial update for Render/Deployment)
+// This tells the app: Use Render's port, or 5000 if running on my laptop
+const PORT = process.env.PORT || 5000; 
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
