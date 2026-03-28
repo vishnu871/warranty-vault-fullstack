@@ -62,8 +62,15 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // ✅ Updated CORS: Allow both your local machine AND your future Netlify app
+// app.use(cors({
+//   origin: ["http://localhost:5173", "https://your-app-name.netlify.app"], // Change this after you get your Netlify link
+//   credentials: true
+// }));
 app.use(cors({
-  origin: ["http://localhost:5173", "https://your-app-name.netlify.app"], // Change this after you get your Netlify link
+  origin: [
+    "http://localhost:5173", 
+    "https://jocular-valkyrie-9348d4.netlify.app" // 👈 Your new live link
+  ],
   credentials: true
 }));
 
