@@ -27,6 +27,7 @@ export interface Document {
 }
 
 export interface Asset {
+  brand: string;
   id: string;
   name: string;
   category: string;

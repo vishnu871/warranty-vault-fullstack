@@ -1,4 +1,7 @@
+// import { Asset } from '../types/asset';
+// // import { calculateCurrentValue, getWarrantyStatus } from './calculations';
 import { Asset } from '../types/asset';
+// POINT THIS TO YOUR NEW CALCULATIONS FILE
 import { calculateCurrentValue, getWarrantyStatus } from './calculations';
 
 /**

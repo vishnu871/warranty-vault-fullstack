@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
 import { Vault, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,12 +8,17 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Checkbox } from '../components/ui/checkbox';
 import { toast } from 'sonner';
+// 🔥 Import the new Modal
+import { ForgotPasswordModal } from '../components/ForgotPasswordModal';
 
 export function Auth() {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  
+  // 🔥 State to control the Forgot Password Modal
+  const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -72,7 +77,6 @@ export function Auth() {
         transition={{ duration: 0.6 }}
         className="relative z-10 w-full max-w-md"
       >
-        {/* Glass Card */}
         <div className="bg-[#121212]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
           {/* Logo & Title */}
           <div className="text-center mb-8">
@@ -172,16 +176,9 @@ export function Auth() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
                 >
-                  {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
-              {!isSignIn && (
-                <p className="text-xs text-white/40 mt-1">Minimum 6 characters</p>
-              )}
             </div>
 
             {isSignIn && (
@@ -189,7 +186,7 @@ export function Auth() {
                 <div className="flex items-center gap-2">
                   <Checkbox
                     checked={rememberMe}
-                    onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                    onCheckedChange={(checked: boolean) => setRememberMe(checked)}
                     id="remember"
                     className="border-white/20"
                   />
@@ -197,7 +194,12 @@ export function Auth() {
                     Remember me
                   </Label>
                 </div>
-                <button type="button" className="text-sm text-[#00E5FF] hover:text-[#00B8D4] transition-colors">
+                {/* 🔥 Updated Button to trigger the Modal */}
+                <button 
+                  type="button" 
+                  onClick={() => setIsForgotModalOpen(true)}
+                  className="text-sm text-[#00E5FF] hover:text-[#00B8D4] transition-colors"
+                >
                   Forgot password?
                 </button>
               </div>
@@ -245,6 +247,12 @@ export function Auth() {
           </p>
         </motion.div>
       </motion.div>
+
+      {/* 🔥 The Forgot Password Modal */}
+      <ForgotPasswordModal 
+        isOpen={isForgotModalOpen} 
+        onClose={() => setIsForgotModalOpen(false)} 
+      />
     </div>
   );
 }
