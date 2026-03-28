@@ -67,10 +67,7 @@ if (!fs.existsSync(uploadDir)) {
 //   credentials: true
 // }));
 app.use(cors({
-  origin: [
-    "http://localhost:5173", 
-    "https://venerable-croquembouche-d86f83.netlify.app/" // 👈 Your new live link
-  ],
+  origin: ["http://localhost:5173", "https://wvault.netlify.app"], // 👈 Use the new name here
   credentials: true
 }));
 
