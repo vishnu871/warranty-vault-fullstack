@@ -25,7 +25,7 @@ export function Vault() {
       const token = localStorage.getItem('token');
       try {
         // 🔥 Ensure your backend is running on 5000
-        const response = await fetch("http://localhost:5000/api/assets", {
+        const response = await fetch("https://warranty-vault-fullstack.vercel.app/api/assets", {
           headers: { "x-auth-token": token || "" }
         });
         
