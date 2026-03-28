@@ -296,15 +296,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     setIsLoading(false);
   }, []);
-
+  const BACKEND_URL = "https://warranty-vault-fullstack.vercel.app/";
   const signIn = async (email: string, password: string) => {
-    const response = await fetch("http://localhost:5000/api/auth/login",{
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
+  
 
     const data = await response.json();
 
@@ -327,7 +328,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (name: string, email: string, password: string) => {
-    const response = await fetch("http://localhost:5000/api/auth/signup",{
+    const response = await fetch(`${BACKEND_URL}/api/auth/signup`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json",
