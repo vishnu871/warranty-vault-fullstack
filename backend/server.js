@@ -50,33 +50,31 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs"); // Added to ensure upload folder exists
+const fs = require("fs"); 
 require("dotenv").config();
 
 const app = express();
 
-// ✅ Create uploads folder if it doesn't exist (Important for new deployments)
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
-// ✅ Updated CORS: Allow both your local machine AND your future Netlify app
-// app.use(cors({
-//   origin: ["http://localhost:5173", "https://your-app-name.netlify.app"], // Change this after you get your Netlify link
-//   credentials: true
-// }));
+// ✅ 1. Updated CORS: Specifically for your Netlify and Local environments
 app.use(cors({
-  origin: ["http://localhost:5173", "https://wvault.netlify.app"], // 👈 Use the new name here
-  credentials: true
+  origin: [
+    "http://localhost:5173", 
+    "https://wvault.netlify.app"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
 
-// ✅ Make uploads folder public
-app.use("/uploads", express.static("uploads"));
+// ✅ 2. Handle File Uploads (Local folder for temp storage)
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// ✅ Multer storage config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -85,28 +83,27 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   }
 });
-
 const upload = multer({ storage });
 
-// ✅ Routes
+// ✅ 3. Routes (Following Scenario A: backend/routes/api/assets.js)
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/product");
-const assetRoutes = require("./routes/api/assets");
+const assetRoutes = require("./routes/api/assets"); 
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/assets", assetRoutes);
 
-// ✅ Upload API
+// ✅ 4. Utility APIs
 app.post("/api/upload", upload.single("bill"), (req, res) => {
   if (!req.file) return res.status(400).json({ message: "No file uploaded" });
   res.json({
     message: "File uploaded successfully",
-    filePath: req.file.path
+    filePath: `/uploads/${req.file.filename}`
   });
 });
 
-// ✅ Test route
+// Root Health Check
 app.get("/", (req, res) => {
   res.json({ 
     status: "Online", 
@@ -115,15 +112,16 @@ app.get("/", (req, res) => {
   });
 });
 
-// ✅ MongoDB connection (Using Environment Variable)
+// ✅ 5. Database Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected ✅"))
   .catch(err => console.error("MongoDB connection error ❌:", err));
 
-// ✅ START SERVER (Crucial update for Render/Deployment)
-// This tells the app: Use Render's port, or 5000 if running on my laptop
+// ✅ 6. Start Server (Standard Listen for local testing)
 const PORT = process.env.PORT || 5000; 
-
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// ✅ 7. CRITICAL FOR VERCEL: Export the app instance
+module.exports = app;
