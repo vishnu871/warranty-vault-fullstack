@@ -1187,7 +1187,7 @@ export function AddAssetModal({ isOpen, onClose, onRefresh }: AddAssetModalProps
     };
 
     try {
-      const response = await fetch("http://localhost:5000/api/assets", {
+      const response = await fetch("https://warranty-vault-fullstack.vercel.app/api/assets/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
