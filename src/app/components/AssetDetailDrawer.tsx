@@ -572,7 +572,7 @@ export function AssetDetailDrawer({ asset, isOpen, onClose, onDelete, onUpdate }
     const assetId = (asset as any)._id || asset.id;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/assets/${assetId}`, {
+      const response = await fetch(`https://warranty-vault-fullstack.vercel.app/api/assets/${assetId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -606,7 +606,7 @@ export function AssetDetailDrawer({ asset, isOpen, onClose, onDelete, onUpdate }
     const token = localStorage.getItem('token');
 
     try {
-      const response = await fetch(`http://localhost:5000/api/assets/${assetId}`, {
+      const response = await fetch(`https://warranty-vault-fullstack.vercel.app/api/assets/${assetId}`, {
         method: "DELETE",
         headers: { "x-auth-token": token || "" }
       });
